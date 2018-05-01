@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -55,6 +56,34 @@ public class MainActivity extends AppCompatActivity
         Button b = (Button)v;
         this.p.getCurrentRoom().takeExit(b.getText().toString().toLowerCase());
         this.fillInterface(this.p.getCurrentRoom());
+    }
+
+    public void addExitButton(View view){
+        Button b = (Button)view;
+        for (String exit: this.p.getCurrentRoom().getExits().keySet()){
+            if(exit.equals("north")){
+                this.p.getCurrentRoom().takeExit(b.getText().toString().toLowerCase());
+                this.fillInterface(this.p.getCurrentRoom());
+            }
+            else if(exit.equals("south")){
+                this.p.getCurrentRoom().takeExit(b.getText().toString().toLowerCase());
+                this.fillInterface(this.p.getCurrentRoom());
+            }
+            else if(exit.equals("east")){
+                this.p.getCurrentRoom().takeExit(b.getText().toString().toLowerCase());
+                this.fillInterface(this.p.getCurrentRoom());
+            }
+            else if(exit.equals("west")){
+                this.p.getCurrentRoom().takeExit(b.getText().toString().toLowerCase());
+                this.fillInterface(this.p.getCurrentRoom());
+            }
+
+            else { //exit not found create one
+                Room room = new Room("Generic Room", "Generic Room");
+                Exit exit1 = new Exit(0,1);
+                this.p.getCurrentRoom().addExit(b.getText().toString().toLowerCase(), exit1);
+            }
+        }
     }
 
     private void buildDungeon()
