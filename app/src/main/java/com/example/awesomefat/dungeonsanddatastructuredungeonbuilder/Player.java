@@ -31,6 +31,10 @@ public class Player
     @Exclude
     public Room getCurrentRoom()
     {
+        if(this.currentRoom_index == -1)
+        {
+            return null;
+        }
         return Core.theDungeon.rooms.get(this.currentRoom_index);
     }
 

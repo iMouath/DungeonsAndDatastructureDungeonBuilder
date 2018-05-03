@@ -18,6 +18,12 @@ public class NPC
         this.currentRoom_index = -1;
     }
 
+    public NPC(String name, int currentRoom_index)
+    {
+        this.name = name;
+        this.currentRoom_index = currentRoom_index;
+    }
+
     public void display()
     {
         System.out.println(this.name);

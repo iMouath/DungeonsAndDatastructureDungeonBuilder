@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity
 
     private Dungeon csDept;
     private MainActivity mainActivityInstancePointer;
+    private boolean isPlayerAdded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -104,7 +105,19 @@ public class MainActivity extends AppCompatActivity
                 Core.currentDungeonKey = theDungeon.getKey();
                 mainActivityInstancePointer.csDept = theDungeon.getValue(Dungeon.class);
                 Core.theDungeon = mainActivityInstancePointer.csDept;
-                mainActivityInstancePointer.csDept.addPlayer(Core.p);
+                if(!mainActivityInstancePointer.isPlayerAdded)
+                {
+                    if(Core.p.currentRoom_index != -1)
+                    {
+                        Core.theDungeon.addPlayer(Core.p, Core.p.currentRoom_index);
+                    }
+                    else
+                    {
+                        mainActivityInstancePointer.csDept.addPlayer(Core.p);
+                    }
+                    mainActivityInstancePointer.isPlayerAdded = !mainActivityInstancePointer.isPlayerAdded;
+
+                }
                 mainActivityInstancePointer.fillInterface(Core.p.getCurrentRoom());
                 mainActivityInstancePointer.saveButton.setVisibility(View.VISIBLE);
             }
@@ -115,15 +128,21 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-
     }
 
     public void saveButtonPressed(View v)
     {
+        this.isPlayerAdded = false;
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference dungeonRef = database.getReference("dungeons");
         DatabaseReference tempDungeon = dungeonRef.child(Core.currentDungeonKey);
         tempDungeon.setValue(Core.theDungeon);
+    }
+
+    public void addNPCButtonPressed(View v)
+    {
+        Intent i = new Intent(this, NewNPCActivity.class);
+        this.startActivity(i);
     }
 
     public void addExitButtonPressed(View v)
