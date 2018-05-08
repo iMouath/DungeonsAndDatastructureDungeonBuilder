@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity
     protected void onRestart()
     {
         super.onRestart();
-        System.out.println("********DSDSDFDSFDSF");
+        this.fillInterface(Core.p.getCurrentRoom());
     }
 
     public void onExitButtonClicked(View v)

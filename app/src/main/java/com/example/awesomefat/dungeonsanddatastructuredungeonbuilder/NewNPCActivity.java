@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 public class NewNPCActivity extends AppCompatActivity
 {
-
     private EditText npcNameET;
 
     @Override
@@ -31,6 +30,7 @@ public class NewNPCActivity extends AppCompatActivity
             NPC temp = new NPC(this.npcNameET.getText().toString(), Core.p.currentRoom_index);
             Room theRoom = Core.theDungeon.findRoomWithIndex(Core.p.currentRoom_index);
             theRoom.addNPC(temp);
+            //Core.firstScreen.fillInterface(Core.p.getCurrentRoom());
             this.finish();
         }
     }

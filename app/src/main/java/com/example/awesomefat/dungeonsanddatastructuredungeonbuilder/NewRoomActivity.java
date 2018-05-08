@@ -53,7 +53,7 @@ public class NewRoomActivity extends AppCompatActivity
             Core.p.getCurrentRoom().addExit(currentDirection, e );
 
             r.addExit(this.getInverseDirection(currentDirection), e);
-            Core.firstScreen.fillInterface(Core.p.getCurrentRoom());
+            //Core.firstScreen.fillInterface(Core.p.getCurrentRoom());
             this.finish();
         }
     }
