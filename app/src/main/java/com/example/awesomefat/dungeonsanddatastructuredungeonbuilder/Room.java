@@ -33,8 +33,7 @@ public class Room
         this.description = description;
     }
 
-
-
+    @Exclude
     public ArrayList<Player> getPlayers() {
         return players;
     }
@@ -95,6 +94,7 @@ public class Room
     }
 
 
+    @Exclude
     public void addPlayer(Player p)
     {
         Object[] params = {p};
@@ -102,6 +102,7 @@ public class Room
     }
 
 
+    @Exclude
     public void removePlayer(Player p)
     {
         Object[] params = {p};

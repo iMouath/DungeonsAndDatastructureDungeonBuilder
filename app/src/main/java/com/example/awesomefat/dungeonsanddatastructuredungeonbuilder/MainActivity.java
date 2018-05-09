@@ -1,5 +1,6 @@
 package com.example.awesomefat.dungeonsanddatastructuredungeonbuilder;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,10 +25,11 @@ public class MainActivity extends AppCompatActivity
     private Button southButton;
     private Button westButton;
     private Button eastButton;
+    private Button saveButton;
 
-    private Player p;
     private Dungeon csDept;
     private MainActivity mainActivityInstancePointer;
+    private boolean isPlayerAdded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,8 +37,11 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Core.firstScreen = this;
         this.mainActivityInstancePointer = this;
 
+        this.saveButton = (Button)this.findViewById(R.id.saveButton);
+        this.saveButton.setVisibility(View.INVISIBLE);
         this.nameTV = (TextView)this.findViewById(R.id.nameTV);
         this.descriptionTV = (TextView)this.findViewById(R.id.descriptionTV);
         this.alsoHereViewGroup = (ViewGroup)this.findViewById(R.id.alsoHereViewGroup);
@@ -45,17 +50,24 @@ public class MainActivity extends AppCompatActivity
         this.eastButton = (Button)this.findViewById(R.id.eastButton);
         this.westButton = (Button)this.findViewById(R.id.westButton);
 
-        p = new Player("Mike");
+        Core.p = new Player("Mike");
         this.buildDungeon();
         //this.csDept.addPlayer(p);
         //this.fillInterface(p.getCurrentRoom());
     }
 
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+        this.fillInterface(Core.p.getCurrentRoom());
+    }
+
     public void onExitButtonClicked(View v)
     {
         Button b = (Button)v;
-        this.p.getCurrentRoom().takeExit(b.getText().toString().toLowerCase());
-        this.fillInterface(this.p.getCurrentRoom());
+        Core.p.getCurrentRoom().takeExit(b.getText().toString().toLowerCase());
+        this.fillInterface(Core.p.getCurrentRoom());
     }
 
     public void addExitButton(View view){
@@ -119,10 +131,24 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 DataSnapshot theDungeon = dataSnapshot.getChildren().iterator().next();
+                Core.currentDungeonKey = theDungeon.getKey();
                 mainActivityInstancePointer.csDept = theDungeon.getValue(Dungeon.class);
                 Core.theDungeon = mainActivityInstancePointer.csDept;
-                mainActivityInstancePointer.csDept.addPlayer(p);
-                mainActivityInstancePointer.fillInterface(p.getCurrentRoom());
+                if(!mainActivityInstancePointer.isPlayerAdded)
+                {
+                    if(Core.p.currentRoom_index != -1)
+                    {
+                        Core.theDungeon.addPlayer(Core.p, Core.p.currentRoom_index);
+                    }
+                    else
+                    {
+                        mainActivityInstancePointer.csDept.addPlayer(Core.p);
+                    }
+                    mainActivityInstancePointer.isPlayerAdded = !mainActivityInstancePointer.isPlayerAdded;
+
+                }
+                mainActivityInstancePointer.fillInterface(Core.p.getCurrentRoom());
+                mainActivityInstancePointer.saveButton.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -131,10 +157,30 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-
     }
 
-    private void fillInterface(Room r)
+    public void saveButtonPressed(View v)
+    {
+        this.isPlayerAdded = false;
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dungeonRef = database.getReference("dungeons");
+        DatabaseReference tempDungeon = dungeonRef.child(Core.currentDungeonKey);
+        tempDungeon.setValue(Core.theDungeon);
+    }
+
+    public void addNPCButtonPressed(View v)
+    {
+        Intent i = new Intent(this, NewNPCActivity.class);
+        this.startActivity(i);
+    }
+
+    public void addExitButtonPressed(View v)
+    {
+        Intent i = new Intent(this, NewRoomActivity.class);
+        this.startActivity(i);
+    }
+
+    public void fillInterface(Room r)
     {
         //fill interface for S120
         this.nameTV.setText(r.getName());

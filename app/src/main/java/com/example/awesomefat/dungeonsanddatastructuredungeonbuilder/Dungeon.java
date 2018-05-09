@@ -29,6 +29,11 @@ public class Dungeon
         this.rooms.add(startRoom);
     }
 
+    public Room findRoomWithIndex(int index)
+    {
+        return this.rooms.get(index);
+    }
+
     public int findIndexOfRoom(Room r)
     {
         return this.rooms.indexOf(r);
@@ -47,5 +52,10 @@ public class Dungeon
     public void addPlayer(Player p)
     {
         this.rooms.get(this.startRoomIndex).addPlayer(p);
+    }
+
+    public void addPlayer(Player p, int roomIndex)
+    {
+        this.rooms.get(roomIndex).addPlayer(p);
     }
 }
